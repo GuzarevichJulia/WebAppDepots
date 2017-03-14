@@ -1,0 +1,52 @@
+﻿@model List<DDWA.ViewModels.DrugTypeQuantity>
+@{
+    ViewBag.Title = "EnterQuantity";
+}
+
+<div>
+    @if (Model.Count() > 0)
+    {
+        <form method="post" action="~/Home/DisplaySelectedDrugs">
+
+            <input type="hidden" value="@ViewBag.DepotId" name="DepotId" />
+            <h3>Enter quantity of stored drug types on the depot:</h3>            
+            <table>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <tr>
+                        <td>@Html.HiddenFor(m => m[i].DrugTypeId)</td>
+                        <td>@Html.HiddenFor(m => m[i].DrugTypeName)</td>
+                        <td>@Html.Label(Model[i].DrugTypeName) </td>
+                        <td>@Html.EditorFor(m => m[i].Quantity) </td>
+                    </tr>
+                }
+            </table>
+            <input type="submit" value="Calculate" style="height:25px; width:80px" />
+            
+
+        </form>
+            <h3>All stored drug units on the depot:</h3>
+            <table class="table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th><p>Drug unit id</p></th>
+                        <th><p>Pick number</p></th>
+                        <th><p>Drug type</p></th>
+                    </tr>
+                </thead>
+            
+                @foreach (var d in ViewBag.DrugUnits)
+                {
+                    <tr>
+                        <td><p>   @d.DrugUnitId</p></td>
+                        <td><p>   @d.PickNumber</p></td>
+                        <td><p>   @d.DrugType.DrugTypeName</p></td>
+                    </tr>
+                }   
+            </table>            
+        }
+        else
+        {
+            <h2>Selected depots dosen't contain any drug units</h2>
+        }
+</div>

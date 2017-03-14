@@ -66,7 +66,7 @@ namespace DDWA.Controllers
             return View(depotDrugDictionary);
         }
 
-        public ActionResult Depots2()
+        public ActionResult DrugUnitsWithDepots()
         {
             var viewModel = from depot in db.Depot
                             join drugUnit in db.DrugUnit
@@ -77,14 +77,14 @@ namespace DDWA.Controllers
         }
 
 
-        public ActionResult PickDrugUnits()
+        public ActionResult SelectDepot()
         {
             List<Depot> depots = new List<Depot>(db.Depot);
             return View(depots);
         }
 
         [HttpGet]
-        public ActionResult SelectDrugs(int? id)
+        public ActionResult EnterQuantity(int? id)
         {
             if (id == null)
             {
@@ -143,7 +143,7 @@ namespace DDWA.Controllers
         }
 
         [HttpPost]
-        public ActionResult SelectDrugs2(List<DrugTypeQuantity> drugTypesList, int depotId)
+        public ActionResult DisplaySelectedDrugs(List<DrugTypeQuantity> drugTypesList, int depotId)
         {
             int id = depotId;
 
