@@ -6,7 +6,7 @@
 <h2>Weight</h2>
 
 <table class="table-bordered text-center">
-
+    @{int i = 0; }
     @foreach (var d in Model)
     {
         <tr>
@@ -20,7 +20,7 @@
                 {
                     <tr>
                         <td><p> @t.Key.DrugTypeName </p></td>
-                        <td><p> @t.Value.Count * @t.Key.DrugTypeWeight / 2.2 = @((t.Value.Count * t.Key.DrugTypeWeight / 2.2).ToString("#.##")) kg</p></td>
+                        <td><p> @t.Value.Count * @t.Key.DrugTypeWeight / 2.2 = @(ViewBag.ValueList[i++].ToString("#.##")) kg</p></td>
                     </tr>
                 }
             }

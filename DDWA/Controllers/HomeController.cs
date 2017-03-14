@@ -177,6 +177,7 @@ namespace DDWA.Controllers
             }
 
             db.SaveChanges();
+
             ViewBag.DrugUnits = drugUnitViewList;
             return View();
         }
@@ -211,7 +212,21 @@ namespace DDWA.Controllers
                 drugUnitByDepotDictionary.Add(depot, drugUnitByTypeDictionary);
             }
             
-                                
+            List<double> weightValues = new List<double>();
+            double scale = 2.2;
+
+            foreach (var d in drugUnitByDepotDictionary)
+            {
+                if(d.Value.Count > 0)
+                {
+                    foreach(var t in d.Value)
+                    {
+                        weightValues.Add(t.Value.Count*t.Key.DrugTypeWeight/scale);
+                    }
+                }
+            }
+
+            ViewBag.ValueList = weightValues;
 
             return View(drugUnitByDepotDictionary);
         }
