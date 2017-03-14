@@ -1,0 +1,27 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h3>List of depots</h3>
+    <table class="table-bordered text-center">
+        <thead>
+            <tr>
+                <th><p>Depot id</p></th>
+                <th><p>Depot name</p></th>
+                <th><p>Action</p></th>
+            </tr>
+        </thead>
+        @foreach (var d in Model)
+            {
+            <tr>
+                <td><p>   @d.DepotId</p></td>
+                <td><p>   @d.DepotName</p></td>
+                <td><p><a href="/Home/SelectDrugs/@d.DepotId"> Choose depot </a></p></td>
+            </tr>
+        }
+
+
+    </table>
+</div>

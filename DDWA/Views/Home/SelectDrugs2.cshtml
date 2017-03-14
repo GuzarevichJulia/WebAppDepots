@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "DisplayShippedDrugs";
+}
+
+<h2>DisplayShippedDrugs</h2>
+
+<table class="table-bordered text-center">
+    <thead>
+        <tr>
+            <th><p>Drug unit id</p></th>
+            <th><p>Pick number</p></th>
+            <th><p>Drug type</p></th>
+        </tr>
+    </thead>
+
+    @foreach (var d in ViewBag.DrugUnits)
+    {
+        <tr>
+            <td><p>   @d.DrugUnitId</p></td>
+            <td><p>   @d.PickNumber</p></td>
+            <td><p>   @d.DrugType.DrugTypeName</p></td>
+        </tr>
+    }
+</table>            

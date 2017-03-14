@@ -1,0 +1,42 @@
+﻿@model IEnumerable<DDWA.ViewModels.DepotDrugUnitView>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <h2>List of depots</h2>
+
+    <table class="table-bordered text-center">
+        <thead>
+            <tr>
+                <th class="text-center"><p>Depot name</p></th>
+                <th class="text-center"><p>Country name</p></th>
+                <th class="text-center"><p>Drug type name</p></th>
+                <th class="text-center"><p>Drug unit id</p></th>
+                <th class="text-center"><p>Pick number</p></th>
+            </tr>
+        </thead>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><p>   @item.Depot.DepotName</p></td>
+                <td><p>   @item.Depot.Country.CountryName</p></td>
+                @if (item.DrugUnit != null)
+                {
+                    <td><p>   @item.DrugUnit.DrugType.DrugTypeName</p></td>
+                    <td><p>   @item.DrugUnit.DrugUnitId</p></td>
+                    <td><p>   @item.DrugUnit.PickNumber</p></td>
+                }
+                else
+                {
+                    <td><p>---</p></td>
+                    <td><p>---</p></td>
+                    <td><p>---</p></td>
+                }
+            </tr>
+        }
+    </table>
+
+</div>
