@@ -94,6 +94,7 @@ namespace DDWA.Controllers
             ViewBag.DepotId = id;
             List<DrugUnit> drugUnits = (from d in db.DrugUnit
                                         where d.DepotId == id
+                                        where d.Shipped == false
                                         select d).ToList<DrugUnit>();
 
             List<DrugUnitView> drugUnitViewList = new List<DrugUnitView>();
@@ -148,6 +149,7 @@ namespace DDWA.Controllers
 
             List<DrugUnit> drugUnits = (from d in db.DrugUnit
                                         where d.DepotId == id
+                                        where d.Shipped == false
                                         select d).ToList<DrugUnit>();
 
           List<DrugUnitView> drugUnitViewList = new List<DrugUnitView>();
@@ -166,6 +168,7 @@ namespace DDWA.Controllers
                             PickNumber = drugUnitWithType[i].PickNumber,
                             DrugTypeId = drugUnitWithType[i].DrugTypeId
                         };
+                        drugUnitWithType[i].Shipped = true;
                         itemDrugUnit.DrugType = new DrugTypeView();
                         itemDrugUnit.DrugType.DrugTypeName = d.DrugTypeName;
                         drugUnitViewList.Add(itemDrugUnit);
@@ -173,6 +176,7 @@ namespace DDWA.Controllers
                 }
             }
 
+            db.SaveChanges();
             ViewBag.DrugUnits = drugUnitViewList;
             return View();
         }
@@ -182,10 +186,10 @@ namespace DDWA.Controllers
             List<Depot> depots = db.Depot.ToList<Depot>();
             List<DrugType> drugTypes = db.DrugType.ToList<DrugType>();
 
-            var drugUnitsInDepot = from depot in db.Depot
+            var drugUnitsInDepot = (from depot in db.Depot
                             join drugUnit in db.DrugUnit
                             on depot.DepotId equals drugUnit.DepotId
-                            select new DepotDrugUnitView { Depot = depot, DrugUnit = drugUnit };
+                            select new DepotDrugUnitView { Depot = depot, DrugUnit = drugUnit }).ToList();
 
             
             Dictionary<Depot, Dictionary<DrugType, List<DepotDrugUnitView>>> drugUnitByDepotDictionary = new Dictionary<Depot, Dictionary<DrugType, List<DepotDrugUnitView>>>();

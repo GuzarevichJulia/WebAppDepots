@@ -21,5 +21,6 @@ namespace DDWA.Models
         public virtual Depot Depot { get; set; }
 
         public virtual DrugType DrugType { get; set; }
+        public bool Shipped { get; set; }
     }
 }
