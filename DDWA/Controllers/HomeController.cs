@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using DDWA.Models;
 using DDWA.ViewModels;
+using AutoMapper;
 
 namespace DDWA.Controllers
 {
@@ -15,8 +16,14 @@ namespace DDWA.Controllers
         public ActionResult Index()
         {
             List<DrugUnit> drugUnits = new List<DrugUnit>(db.DrugUnit);
+            List<DrugUnitViewModel> drugUnitsView = new List<DrugUnitViewModel>();
 
-            return View(drugUnits);
+            Mapper.Initialize(cfg => cfg.CreateMap<DrugUnit, DrugUnitViewModel>()
+                            .ForMember("DepotName", opt => opt.MapFrom(src => src.Depot.DepotName))
+                            .ForMember("DrugTypeName", opt => opt.MapFrom(src => src.DrugType.DrugTypeName)));
+            drugUnitsView = Mapper.Map<List<DrugUnit>,List<DrugUnitViewModel>>(drugUnits);
+
+            return View(drugUnitsView);
         }
 
         [HttpGet]
@@ -32,19 +39,27 @@ namespace DDWA.Controllers
             {
                 SelectList depots = new SelectList(db.Depot, "DepotId", "DepotName", drugUnit.DrugUnitId);
                 ViewBag.Depots = depots;
-                return View(drugUnit);
+                ViewBag.DrugUnitId = drugUnit.DrugUnitId;
+                return View();
             }
 
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult EditDrugUnitDepot(DrugUnitView drugUnitView)
+        public ActionResult EditDrugUnitDepot(DrugUnitViewModel drugUnitViewModel)
         {
             DrugUnit drugUnit = (from d in db.DrugUnit
-                                 where d.DrugUnitId == drugUnitView.DrugUnitId
+                                 where d.DrugUnitId == drugUnitViewModel.DrugUnitId
                                  select d).First();
-            drugUnit.DepotId = drugUnitView.DepotId;
+            if (drugUnitViewModel.DepotId != 0)
+            {
+                drugUnit.DepotId = drugUnitViewModel.DepotId;
+            }
+            else
+            {
+                drugUnit.DepotId = null;
+            }
             db.SaveChanges();
 
             return RedirectToAction("Index");
@@ -80,11 +95,17 @@ namespace DDWA.Controllers
         public ActionResult SelectDepot()
         {
             List<Depot> depots = new List<Depot>(db.Depot);
-            return View(depots);
+
+            List<DepotViewModel> depotsList = new List<DepotViewModel>();
+
+            Mapper.Initialize(cfg => cfg.CreateMap<Depot, DepotViewModel>());
+            depotsList = Mapper.Map<List<Depot>, List<DepotViewModel>>(depots);
+
+            return View(depotsList);
         }
 
         [HttpGet]
-        public ActionResult EnterQuantity(int? id)
+        public ActionResult PickForSending(int? id)
         {
             if (id == null)
             {
@@ -97,24 +118,10 @@ namespace DDWA.Controllers
                                         where d.Shipped == false
                                         select d).ToList<DrugUnit>();
 
-            List<DrugUnitView> drugUnitViewList = new List<DrugUnitView>();
-            foreach(var d in drugUnits)
-            {
-                DrugTypeView tempDrugType = new DrugTypeView
-                {
-                    DrugTypeId = d.DrugTypeId,
-                    DrugTypeName = d.DrugType.DrugTypeName                    
-                };
-
-                DrugUnitView drugUnitView = new DrugUnitView
-                {
-                    DrugUnitId = d.DrugUnitId,                    
-                    PickNumber = d.PickNumber,
-                    DrugTypeId = d.DrugTypeId,
-                    DrugType = tempDrugType
-                };
-                drugUnitViewList.Add(drugUnitView);
-            }
+            List<DrugUnitViewModel> drugUnitsList = new List<DrugUnitViewModel>();
+            Mapper.Initialize(cfg => cfg.CreateMap<DrugUnit, DrugUnitViewModel>()
+                            .ForMember("DrugTypeName", opt => opt.MapFrom(src => src.DrugType.DrugTypeName)));
+            drugUnitsList = Mapper.Map<List<DrugUnit>, List<DrugUnitViewModel>>(drugUnits);
 
             HashSet<DrugType> drugTypes = new HashSet<DrugType>();
             foreach(var d in drugUnits)
@@ -137,13 +144,12 @@ namespace DDWA.Controllers
                 drugTypesList.Add(drugTypeItem);
             }
 
-            ViewBag.DrugUnits = drugUnitViewList;       
-
+            ViewBag.DrugUnits = drugUnitsList;      
             return View(drugTypesList);
         }
 
         [HttpPost]
-        public ActionResult DisplaySelectedDrugs(List<DrugTypeQuantity> drugTypesList, int depotId)
+        public ActionResult PickForSending(List<DrugTypeQuantity> drugTypesList, int depotId)
         {
             int id = depotId;
 
@@ -152,34 +158,27 @@ namespace DDWA.Controllers
                                         where d.Shipped == false
                                         select d).ToList<DrugUnit>();
 
-          List<DrugUnitView> drugUnitViewList = new List<DrugUnitView>();
+            List<string> shippedDrugUnitsId = new List<string>();
+
             foreach (var d in drugTypesList)
             {
                 List<DrugUnit> drugUnitWithType = (from t in drugUnits
                                                    where t.DrugTypeId == d.DrugTypeId
                                                    select t).ToList<DrugUnit>();
+
                 for (int i = 0; i < d.Quantity; i++)
                 {
-                    if (i <= drugUnitWithType.Count - 1)
+                    if (i < drugUnitWithType.Count)
                     {
-                        DrugUnitView itemDrugUnit = new DrugUnitView
-                        {
-                            DrugUnitId = drugUnitWithType[i].DrugUnitId,
-                            PickNumber = drugUnitWithType[i].PickNumber,
-                            DrugTypeId = drugUnitWithType[i].DrugTypeId
-                        };
                         drugUnitWithType[i].Shipped = true;
-                        itemDrugUnit.DrugType = new DrugTypeView();
-                        itemDrugUnit.DrugType.DrugTypeName = d.DrugTypeName;
-                        drugUnitViewList.Add(itemDrugUnit);
+                        shippedDrugUnitsId.Add(drugUnitWithType[i].DrugUnitId);
                     }
                 }
             }
-
             db.SaveChanges();
 
-            ViewBag.DrugUnits = drugUnitViewList;
-            return View();
+            ViewBag.DrugUnitsId = shippedDrugUnitsId;
+            return View("DisplaySelectedDrugs");
         }
 
         public ActionResult Weight()
@@ -227,7 +226,6 @@ namespace DDWA.Controllers
             }
 
             ViewBag.ValueList = weightValues;
-
             return View(drugUnitByDepotDictionary);
         }
 

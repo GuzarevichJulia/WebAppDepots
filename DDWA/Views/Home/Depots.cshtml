@@ -4,10 +4,8 @@
 }
 
 <div>
-    <h2>List of depots</h2>
-        
+    <h2>List of depots</h2>        
     <table class="table-bordered text-center">
-
         @foreach (var d in ViewBag.Depots)
         {
             <tr>
@@ -21,14 +19,13 @@
                     <td><p>Drug unit id</p></td>
                     <td><p>Pick number</p></td>
                 </tr>
-
-                 foreach (var du in Model[d.DepotId])
-                 {
-                        <tr>
-                            <td><p>   @du.DrugType.DrugTypeName</p></td>
-                            <td><p>   @du.DrugUnitId</p></td>
-                            <td><p>   @du.PickNumber</p></td>
-                        </tr>
+                foreach (var du in Model[d.DepotId])
+                {
+                    <tr>
+                        <td><p>   @du.DrugType.DrugTypeName</p></td>
+                        <td><p>   @du.DrugUnitId</p></td>
+                        <td><p>   @du.PickNumber</p></td>
+                    </tr>
                 }
             }
             else
@@ -37,6 +34,5 @@
             }
             </tr>
         }
-    </table>
-    
+    </table>    
 </div>

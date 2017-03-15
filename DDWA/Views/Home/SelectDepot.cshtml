@@ -18,10 +18,8 @@
             <tr>
                 <td><p>   @d.DepotId</p></td>
                 <td><p>   @d.DepotName</p></td>
-                <td><p><a href="/Home/EnterQuantity/@d.DepotId"> Select depot </a></p></td>
+                <td>@Html.ActionLink("Select depot", "PickForSending", new { id = d.DepotId })</td>
             </tr>
         }
-
-
     </table>
 </div>
