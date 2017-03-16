@@ -196,6 +196,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Migrations\201703131247595_SampleMigration.cs" />
     <Compile Include="Migrations\201703131247595_SampleMigration.Designer.cs">
       <DependentUpon>201703131247595_SampleMigration.cs</DependentUpon>
@@ -204,10 +205,7 @@
     <Compile Include="Models\DrugsContext.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Models\Country.cs" />
     <Compile Include="Models\Depot.cs" />
     <Compile Include="Models\DrugType.cs" />
@@ -215,12 +213,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Startup.cs" />
     <Compile Include="Models\SupplyCountry.cs" />
+    <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\DepotDrugUnitView.cs" />
     <Compile Include="ViewModels\DepotViewModel.cs" />
     <Compile Include="ViewModels\DrugTypesQuantity.cs" />
@@ -259,11 +254,8 @@
     </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\Lockout.cshtml" />
-    <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\EditDrugUnitDepot.cshtml" />
     <Content Include="Views\Home\Depots.cshtml" />
     <Content Include="Views\Home\DrugUnitsWithDepots.cshtml" />

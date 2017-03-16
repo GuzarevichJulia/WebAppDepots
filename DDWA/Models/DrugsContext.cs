@@ -10,6 +10,7 @@ namespace DDWA.Models
         public DrugsContext()
             : base("name=adoComponent")
         {
+            Database.SetInitializer<DrugsContext>(new CreateDatabaseIfNotExists<DrugsContext>());
         }
 
         public virtual DbSet<Country> Country { get; set; }
