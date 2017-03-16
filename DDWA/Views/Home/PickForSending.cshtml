@@ -15,6 +15,7 @@
                 {
                     <tr>
                         <td>@Html.HiddenFor(m => m[i].DrugTypeId)</td>
+                        <td>@Html.HiddenFor(m => m[i].DrugTypeName)</td>
                         <td>@Html.LabelFor(m => m[i].DrugTypeName, Model[i].DrugTypeName) </td>
                         <td>@Html.EditorFor(m => m[i].Quantity) </td>
                     </tr>

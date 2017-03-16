@@ -159,25 +159,42 @@ namespace DDWA.Controllers
                                         select d).ToList<DrugUnit>();
 
             List<string> shippedDrugUnitsId = new List<string>();
+            Dictionary<string, int> unshippedDrugUnits = new Dictionary<string, int>();
 
             foreach (var d in drugTypesList)
             {
                 List<DrugUnit> drugUnitWithType = (from t in drugUnits
                                                    where t.DrugTypeId == d.DrugTypeId
                                                    select t).ToList<DrugUnit>();
-
-                for (int i = 0; i < d.Quantity; i++)
+                
+                int shippedCount;
+                int unshippedCount = 0; 
+                if(d.Quantity < 0)
                 {
-                    if (i < drugUnitWithType.Count)
-                    {
-                        drugUnitWithType[i].Shipped = true;
-                        shippedDrugUnitsId.Add(drugUnitWithType[i].DrugUnitId);
-                    }
+                    shippedCount = 0;
                 }
+                if ((drugUnitWithType.Count - d.Quantity) < 0)
+                {
+                    shippedCount = drugUnitWithType.Count;
+                    unshippedCount = d.Quantity - drugUnitWithType.Count;
+                    unshippedDrugUnits.Add(d.DrugTypeName,unshippedCount);
+                }
+                else
+                {
+                    shippedCount = d.Quantity;
+                }
+
+                for (int i = 0; i < shippedCount; i++)
+                {
+                    drugUnitWithType[i].Shipped = true;
+                    shippedDrugUnitsId.Add(drugUnitWithType[i].DrugUnitId);                        
+                }
+                
             }
             db.SaveChanges();
 
             ViewBag.DrugUnitsId = shippedDrugUnitsId;
+            ViewBag.UnshippedDrugUnits = unshippedDrugUnits;
             return View("DisplaySelectedDrugs");
         }
 

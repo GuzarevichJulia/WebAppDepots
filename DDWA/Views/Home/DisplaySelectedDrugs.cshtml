@@ -3,7 +3,7 @@
     ViewBag.Title = "DisplayShippedDrugs";
 }
 
-<h2>DisplayShippedDrugs</h2>
+<h2>Shipped drug unit(s) : </h2>
 
 <table class="table-bordered text-center">
     <thead>
@@ -18,4 +18,25 @@
             <td><p>   @d</p></td>
         </tr>
     }
-</table>            
+</table>   
+
+@if (ViewBag.UnshippedDrugUnits.Count > 0)
+{
+    <h2>Unshipped drug unit(s) : </h2>
+    <table class="table-bordered text-center">
+        <thead>
+            <tr>
+                <th><p>Drug type</p></th>
+                <th><p>Quantity</p></th>
+            </tr>
+        </thead>
+
+        @foreach (var d in ViewBag.UnshippedDrugUnits)
+        {
+            <tr>
+                <td><p>@d.Key</p></td>
+                <td><p>@d.Value</p></td>
+            </tr>
+        }
+    </table>
+}         
