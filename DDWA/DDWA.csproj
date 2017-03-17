@@ -83,6 +83,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -196,7 +197,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\DepotsController.cs" />
+    <Compile Include="Controllers\DrugUnitsController.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
+    <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Migrations\201703131247595_SampleMigration.cs" />
     <Compile Include="Migrations\201703131247595_SampleMigration.Designer.cs">
       <DependentUpon>201703131247595_SampleMigration.cs</DependentUpon>
@@ -215,11 +219,15 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\SupplyCountry.cs" />
+    <Compile Include="Repositories\EFUnitOfWork.cs" />
+    <Compile Include="Repositories\SQLDepotRepository.cs" />
+    <Compile Include="Repositories\SQLDrugUnitRepository.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\DepotDrugUnitView.cs" />
     <Compile Include="ViewModels\DepotViewModel.cs" />
     <Compile Include="ViewModels\DrugTypesQuantity.cs" />
     <Compile Include="ViewModels\DrugUnitViewModel.cs" />
+    <Compile Include="ViewModels\WeightView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -255,14 +263,14 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\EditDrugUnitDepot.cshtml" />
-    <Content Include="Views\Home\Depots.cshtml" />
-    <Content Include="Views\Home\DrugUnitsWithDepots.cshtml" />
-    <Content Include="Views\Home\SelectDepot.cshtml" />
-    <Content Include="Views\Home\PickForSending.cshtml" />
-    <Content Include="Views\Home\DisplaySelectedDrugs.cshtml" />
-    <Content Include="Views\Home\Weight.cshtml" />
+    <Content Include="Views\DrugUnits\Index.cshtml" />
+    <Content Include="Views\DrugUnits\Edit.cshtml" />
+    <Content Include="Views\Depots\Depots.cshtml" />
+    <Content Include="Views\Depots\DepotsInfo.cshtml" />
+    <Content Include="Views\DrugUnits\Select.cshtml" />
+    <Content Include="Views\DrugUnits\Send.cshtml" />
+    <Content Include="Views\DrugUnits\Display.cshtml" />
+    <Content Include="Views\Depots\WeightInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -279,6 +287,9 @@
     <EmbeddedResource Include="Migrations\201703131247595_SampleMigration.resx">
       <DependentUpon>201703131247595_SampleMigration.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

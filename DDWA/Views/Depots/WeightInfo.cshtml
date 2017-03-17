@@ -1,0 +1,25 @@
+﻿@model IEnumerable<DDWA.ViewModels.WeightView>
+@{
+    ViewBag.Title = "WeightInfo";
+}
+
+<h2>The weight of all the drug units of each stored type from that depot (in kg) :</h2>
+
+<table class="table-bordered text-center">
+    <thead>
+        <tr>
+            <th class="text-center"><p>Depot name</p></th>
+            <th class="text-center"><p>Drug type name</p></th>
+            <th class="text-center"><p>Weight</p></th>
+        </tr>
+    </thead>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td><p>   @item.DepotName</p></td>
+            <td><p>   @item.DrugTypeName</p></td>
+            <td><p>   @String.Format("{0:0.00}", item.TotalWeight)</p></td>
+        </tr>
+    }
+</table>
