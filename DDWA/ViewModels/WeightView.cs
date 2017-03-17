@@ -11,7 +11,7 @@ namespace DDWA.ViewModels
         public string DepotName { get; set; }
         public string DrugTypeName { get; set; }
         public double DrugTypeWeight { get; set; }
-        public List<DrugUnit> DrugUnits { get; set; }
         public double TotalWeight { get; set; }
+        public int Count { get; set; }
     }
 }

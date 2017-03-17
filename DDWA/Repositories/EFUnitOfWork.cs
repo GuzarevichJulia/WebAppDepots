@@ -31,7 +31,7 @@ namespace DDWA.Repositories
             }
         }
 
-        public IRepository<Depot> Depots
+        public SQLDepotRepository Depots
         {
             get
             {

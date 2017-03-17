@@ -49,36 +49,15 @@ namespace DDWA.Controllers
 
         public ActionResult WeightInfo()
         {
-            /*var list = Database.Depots.GetTypesWeights();
-
-            foreach (var item in list)
-            {
-                item.WeightSumm = item.Count * item.Weight / 2.2;
-            }*/
-            
-
-            var allDrugUnits = Database.DrugUnits.GetAll().ToList();
-
-            var drugUnitsList = (from du in allDrugUnits
-                       where du.Depot != null
-                       select du).ToList();
-
-            var groгpedDrugUnits = (drugUnitsList.GroupBy(x => new { x.Depot, x.DrugType })
-                                        .Select(y => new WeightView()
-                                        {
-                                            DrugTypeName = y.Key.DrugType.DrugTypeName,
-                                            DepotName = y.Key.Depot.DepotName,
-                                            DrugTypeWeight = y.Key.DrugType.DrugTypeWeight,
-                                            DrugUnits = y.ToList()
-                                        })).ToList();
+            var groupedList = Database.Depots.GetTypesWeights().ToList();
 
             double scale = 2.2;;
-            foreach (var item in groгpedDrugUnits)
+            foreach (var item in groupedList)
             {
-                item.TotalWeight = item.DrugUnits.Count * item.DrugTypeWeight / scale;
+                item.TotalWeight = item.Count * item.DrugTypeWeight / scale;
             }           
 
-            return View(groгpedDrugUnits);
+            return View(groupedList);
         }
     }
 }

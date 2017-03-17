@@ -5,6 +5,7 @@ using System.Web;
 using DDWA.Interfaces;
 using DDWA.Models;
 using System.Data.Entity;
+using DDWA.ViewModels;
 
 namespace DDWA.Repositories
 {
@@ -49,6 +50,25 @@ namespace DDWA.Repositories
             {
                 db.Depot.Remove(depot);
             }
+        }
+
+        public IQueryable<WeightView> GetTypesWeights()
+        {
+            return from du in db.DrugUnit
+                    where du.DepotId != null
+                    group new { du.Depot, du.DrugType, du } by new
+                    {
+                        du.Depot.DepotName,
+                        du.DrugType.DrugTypeName,
+                        du.DrugType.DrugTypeWeight
+                    } into g
+                    select new WeightView()
+                    {
+                        DepotName = g.Key.DepotName,
+                        DrugTypeName = g.Key.DrugTypeName,
+                        DrugTypeWeight = g.Key.DrugTypeWeight,
+                        Count = g.Count(p => p.du.DrugUnitId != null)
+                    };
         }
 
     }
