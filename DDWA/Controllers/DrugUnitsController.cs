@@ -23,8 +23,8 @@ namespace DDWA.Controllers
         public ActionResult Index()
         {
             List<DrugUnit> drugUnits = new List<DrugUnit>(Database.DrugUnits.GetAll());
-            List<DrugUnitViewModel> drugUnitsView = new List<DrugUnitViewModel>();
 
+            List<DrugUnitViewModel> drugUnitsView = new List<DrugUnitViewModel>();
             Mapper.Initialize(cfg => cfg.CreateMap<DrugUnit, DrugUnitViewModel>()
                             .ForMember("DepotName", opt => opt.MapFrom(src => src.Depot.DepotName))
                             .ForMember("DrugTypeName", opt => opt.MapFrom(src => src.DrugType.DrugTypeName)));
@@ -44,24 +44,24 @@ namespace DDWA.Controllers
             DrugUnit drugUnit = Database.DrugUnits.GetById(id);
             if (drugUnit != null)
             {
-                SelectList depots = new SelectList(Database.Depots.GetAll(), "DepotId", "DepotName", drugUnit.DrugUnitId);
-                ViewBag.Depots = depots;
-                ViewBag.DrugUnitId = drugUnit.DrugUnitId;
-                return View();
+                EditingDrugUnitModel editingDrugUnit = new EditingDrugUnitModel
+                {
+                    DepotsList = new SelectList(Database.Depots.GetAll(), "DepotId", "DepotName", drugUnit.DrugUnitId),
+                    DrugUnitId = drugUnit.DrugUnitId
+                };
+                return View(editingDrugUnit);
             }
 
             return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public ActionResult Edit(DrugUnitViewModel drugUnitViewModel)
+        public ActionResult Edit(EditedDrugUnitModel editedDrugUnit)
         {
-            DrugUnit drugUnit = (from d in Database.DrugUnits.GetAll()
-                                 where d.DrugUnitId == drugUnitViewModel.DrugUnitId
-                                 select d).First();
-            if (drugUnitViewModel.DepotId != 0)
+            DrugUnit drugUnit = Database.DrugUnits.GetById(editedDrugUnit.DrugUnitId);
+            if (editedDrugUnit.DepotId != 0)
             {
-                drugUnit.DepotId = drugUnitViewModel.DepotId;
+                drugUnit.DepotId = editedDrugUnit.DepotId;
             }
             else
             {
@@ -77,7 +77,6 @@ namespace DDWA.Controllers
             List<Depot> depots = new List<Depot>(Database.Depots.GetAll());
 
             List<DepotViewModel> depotsList = new List<DepotViewModel>();
-
             Mapper.Initialize(cfg => cfg.CreateMap<Depot, DepotViewModel>());
             depotsList = Mapper.Map<List<Depot>, List<DepotViewModel>>(depots);
 
@@ -93,18 +92,16 @@ namespace DDWA.Controllers
             }
 
             ViewBag.DepotId = id;
-            List<DrugUnit> drugUnits = (from d in Database.DrugUnits.GetAll()
-                                        where d.DepotId == id
-                                        where d.Shipped == false
-                                        select d).ToList<DrugUnit>();
 
-            List<DrugUnitViewModel> drugUnitsList = new List<DrugUnitViewModel>();
+            var unshippedDrugUnits = Database.DrugUnits.GetUnshippedDrugUnitsFromDepot((int)id).ToList();
+            
+            List<DrugUnitViewModel> unshippedDrugUnitsView = new List<DrugUnitViewModel>();
             Mapper.Initialize(cfg => cfg.CreateMap<DrugUnit, DrugUnitViewModel>()
                             .ForMember("DrugTypeName", opt => opt.MapFrom(src => src.DrugType.DrugTypeName)));
-            drugUnitsList = Mapper.Map<List<DrugUnit>, List<DrugUnitViewModel>>(drugUnits);
+            unshippedDrugUnitsView = Mapper.Map<List<DrugUnit>, List<DrugUnitViewModel>>(unshippedDrugUnits);
 
             HashSet<DrugType> drugTypes = new HashSet<DrugType>();
-            foreach (var d in drugUnits)
+            foreach (var d in unshippedDrugUnits)
             {
                 if (!drugTypes.Contains(d.DrugType))
                 {
@@ -124,7 +121,7 @@ namespace DDWA.Controllers
                 drugTypesList.Add(drugTypeItem);
             }
 
-            ViewBag.DrugUnits = drugUnitsList;
+            ViewBag.DrugUnits = unshippedDrugUnitsView;
             return View(drugTypesList);
         }
 

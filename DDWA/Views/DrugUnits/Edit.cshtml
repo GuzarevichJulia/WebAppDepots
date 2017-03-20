@@ -1,4 +1,4 @@
-﻿@model DDWA.ViewModels.DrugUnitViewModel
+﻿@model DDWA.ViewModels.EditingDrugUnitModel
 @{
     ViewBag.Title = "EditDepot";
 }
@@ -9,15 +9,15 @@
     <h3>Assign drug unit with depot: </h3>
     @using (Html.BeginForm())
     {
-        <input  type="hidden" value="@ViewBag.DrugUnitId" name="DrugUnitId" />
+        <input  type="hidden" value="@Model.DrugUnitId" name="DrugUnitId" />
         <table>
             <tr>
                 <td><p>Drug unit id: </p></td>
-                <td><p>@ViewBag.DrugUnitId</p></td>
+                <td><p>@Model.DrugUnitId</p></td>
             </tr>
             <tr>
                 <td><p>Depot name:</p></td>                
-                <td><p> @Html.DropDownListFor(model => model.DepotId, ViewBag.Depots as SelectList, "--Not selected --") </p></td>
+                <td><p> @Html.DropDownList("DepotId", Model.DepotsList, "--Not selected --") </p></td>
             </tr>        
             <tr><td><input type="submit" value="Save" style="height:25px; width:80px"/></td><td></td></tr>
         </table>

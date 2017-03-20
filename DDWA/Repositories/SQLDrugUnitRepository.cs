@@ -8,47 +8,33 @@ using System.Data.Entity;
 
 namespace DDWA.Repositories
 {
-    public class SQLDrugUnitRepository : IRepository<DrugUnit>
+    public class SQLDrugUnitRepository : SQLBaseRepository<DrugUnit>, IDrugUnitRepository
     {
-        private DrugsContext db;
-
-        public SQLDrugUnitRepository(DrugsContext context)
+        public SQLDrugUnitRepository(DrugsContext context) : base (context)
         {
-            this.db = context;
-        }
-
-        public IQueryable<DrugUnit> GetAll()
-        {
-            return db.DrugUnit.Include(x => x.Depot);
-        }
-
-        public DrugUnit GetById(int id)
-        {
-            return db.DrugUnit.Find(id);
+            entity = db.DrugUnit;
         }
 
         public DrugUnit GetById(string id)
         {
-            return db.DrugUnit.Find(id);
+            return entity.Find(id);
         }
 
-        public void Create(DrugUnit drugUnit)
+        public void Delete(string id)
         {
-            db.DrugUnit.Add(drugUnit);
-        }
-
-        public void Update(DrugUnit drugUnit)
-        {
-            db.Entry(drugUnit).State = EntityState.Modified;
-        }
-
-        public void Delete(int id)
-        {
-            DrugUnit drugUnit = db.DrugUnit.Find(id);
+            DrugUnit drugUnit = entity.Find(id);
             if(drugUnit != null)
             {
-                db.DrugUnit.Remove(drugUnit);
+                entity.Remove(drugUnit);
             }
+        }
+
+        public IQueryable<DrugUnit> GetUnshippedDrugUnitsFromDepot(int depotId)
+        {
+            return from d in entity
+                   where d.DepotId == depotId
+                   where d.Shipped == false
+                   select d;
         }
     }
 }

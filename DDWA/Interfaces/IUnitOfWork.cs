@@ -10,7 +10,7 @@ namespace DDWA.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
-        IRepository<DrugUnit> DrugUnits { get; }
+        SQLDrugUnitRepository DrugUnits { get; }
         SQLDepotRepository Depots { get; }
         void Save();
     }

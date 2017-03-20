@@ -199,6 +199,8 @@
   <ItemGroup>
     <Compile Include="Controllers\DepotsController.cs" />
     <Compile Include="Controllers\DrugUnitsController.cs" />
+    <Compile Include="Interfaces\IDrugUnitRepository.cs" />
+    <Compile Include="Interfaces\IDepotRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Migrations\201703131247595_SampleMigration.cs" />
@@ -219,6 +221,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\SupplyCountry.cs" />
+    <Compile Include="Repositories\SQLBaseRepository.cs" />
     <Compile Include="Repositories\EFUnitOfWork.cs" />
     <Compile Include="Repositories\SQLDepotRepository.cs" />
     <Compile Include="Repositories\SQLDrugUnitRepository.cs" />
@@ -227,6 +230,9 @@
     <Compile Include="ViewModels\DepotViewModel.cs" />
     <Compile Include="ViewModels\DrugTypesQuantity.cs" />
     <Compile Include="ViewModels\DrugUnitViewModel.cs" />
+    <Compile Include="ViewModels\EditedDrugUnitModel.cs" />
+    <Compile Include="ViewModels\EditingDrugUnitModel.cs" />
+    <Compile Include="ViewModels\SendingDrugUnitsModel.cs" />
     <Compile Include="ViewModels\WeightView.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -265,7 +271,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\DrugUnits\Index.cshtml" />
     <Content Include="Views\DrugUnits\Edit.cshtml" />
-    <Content Include="Views\Depots\Depots.cshtml" />
     <Content Include="Views\Depots\DepotsInfo.cshtml" />
     <Content Include="Views\DrugUnits\Select.cshtml" />
     <Content Include="Views\DrugUnits\Send.cshtml" />

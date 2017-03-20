@@ -19,7 +19,7 @@ namespace DDWA.Repositories
             db = new DrugsContext();
         }
 
-        public IRepository<DrugUnit> DrugUnits
+        public SQLDrugUnitRepository DrugUnits
         {
             get
             {

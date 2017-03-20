@@ -9,46 +9,24 @@ using DDWA.ViewModels;
 
 namespace DDWA.Repositories
 {
-    public class SQLDepotRepository : IRepository<Depot>
-    {
-        private DrugsContext db;
-
-        public SQLDepotRepository(DrugsContext context)
+    public class SQLDepotRepository : SQLBaseRepository<Depot>, IDepotRepository
+    {    
+        public SQLDepotRepository(DrugsContext context) : base (context)
         {
-            this.db = context;
-        }
-
-        public IQueryable<Depot> GetAll()
-        {
-            return db.Depot;
-        }
+            entity = db.Depot;
+        }        
 
         public Depot GetById(int id)
         {
-            return db.Depot.Find(id);
-        }
-
-        public Depot GetById(string id)
-        {
-            return db.Depot.Find(id);
-        }
-
-        public void Create(Depot drugUnit)
-        {
-            db.Depot.Add(drugUnit);
-        }
-
-        public void Update(Depot depot)
-        {
-            db.Entry(depot).State = EntityState.Modified;
-        }
+            return entity.Find(id);
+        }        
 
         public void Delete(int id)
         {
-            Depot depot = db.Depot.Find(id);
+            Depot depot = entity.Find(id);
             if(depot != null)
             {
-                db.Depot.Remove(depot);
+                entity.Remove(depot);
             }
         }
 
@@ -69,6 +47,15 @@ namespace DDWA.Repositories
                         DrugTypeWeight = g.Key.DrugTypeWeight,
                         Count = g.Count(p => p.du.DrugUnitId != null)
                     };
+        }
+
+        public IQueryable<DepotDrugUnitView> GetDepotsDrugUnits()
+        {
+            return from depot in entity
+                   join drugUnit in db.DrugUnit
+                   on depot.DepotId equals drugUnit.DepotId into Joined
+                   from drugUnit in Joined.DefaultIfEmpty()
+                   select new DepotDrugUnitView { Depot = depot, DrugUnit = drugUnit != null ? drugUnit : null };
         }
 
     }
