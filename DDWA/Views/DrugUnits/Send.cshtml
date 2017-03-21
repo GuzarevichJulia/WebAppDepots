@@ -1,23 +1,23 @@
-﻿@model List<DDWA.ViewModels.DrugTypeQuantity>
-@{
+﻿@model DDWA.ViewModels.DrugTypesInDepot
+@{ 
     ViewBag.Title = "EnterQuantity";
 }
 
 <div>
-    @if (Model.Count() > 0)
+    @if (Model.AvailableDrugTypes.Count > 0)
     {
         using (Html.BeginForm())
         {
-            <input type="hidden" value="@ViewBag.DepotId" name="DepotId" />
+            <input type="hidden" value="@Model.DepotId" name="DepotId" />
             <h3>Enter quantity of stored drug types on the depot:</h3>            
             <table>
-                @for (int i = 0; i < Model.Count; i++)
+                @for (int i = 0; i < Model.AvailableDrugTypes.Count; i++)
                 {
                     <tr>
-                        <td>@Html.HiddenFor(m => m[i].DrugTypeId)</td>
-                        <td>@Html.HiddenFor(m => m[i].DrugTypeName)</td>
-                        <td>@Html.LabelFor(m => m[i].DrugTypeName, Model[i].DrugTypeName) </td>
-                        <td>@Html.EditorFor(m => m[i].Quantity) </td>
+                        <td>@Html.HiddenFor(m => m.AvailableDrugTypes[i].DrugTypeId)</td>
+                        <td>@Html.HiddenFor(m => m.AvailableDrugTypes[i].DrugTypeName)</td>
+                        <td>@Html.LabelFor(m => m.AvailableDrugTypes[i].DrugTypeName, Model.AvailableDrugTypes[i].DrugTypeName) </td>
+                        <td>@Html.EditorFor(m => m.AvailableDrugTypes[i].Quantity) </td>
                     </tr>
                 }
             </table>
@@ -43,6 +43,6 @@
     }
     else
     {
-        <h2>Selected depot dosen't contain any drug units</h2>
+        <h2>Selected depot dosen't contain any drug units for sending</h2>
     }
 </div>

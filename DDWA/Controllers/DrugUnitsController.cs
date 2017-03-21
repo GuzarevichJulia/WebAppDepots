@@ -76,11 +76,11 @@ namespace DDWA.Controllers
         {
             List<Depot> depots = new List<Depot>(Database.Depots.GetAll());
 
-            List<DepotViewModel> depotsList = new List<DepotViewModel>();
+            List<DepotViewModel> depotsView = new List<DepotViewModel>();
             Mapper.Initialize(cfg => cfg.CreateMap<Depot, DepotViewModel>());
-            depotsList = Mapper.Map<List<Depot>, List<DepotViewModel>>(depots);
+            depotsView = Mapper.Map<List<Depot>, List<DepotViewModel>>(depots);
 
-            return View(depotsList);
+            return View(depotsView);
         }
 
         [HttpGet]
@@ -89,90 +89,27 @@ namespace DDWA.Controllers
             if (id == null)
             {
                 return HttpNotFound();
-            }
+            }          
 
-            ViewBag.DepotId = id;
+            var drugTypesInDepot = Database.DrugUnits.GetAvailableDrugTypesInDepot((int)id);
 
-            var unshippedDrugUnits = Database.DrugUnits.GetUnshippedDrugUnitsFromDepot((int)id).ToList();
-            
-            List<DrugUnitViewModel> unshippedDrugUnitsView = new List<DrugUnitViewModel>();
+            //not necessary, for clarity when choosing the quantity of a certain type
+            var availableDrugUnits = Database.DrugUnits.GetAvailableDrugUnitsFromDepot((int)id).ToList();
+            List<DrugUnitViewModel> availableDrugUnitsView = new List<DrugUnitViewModel>();
             Mapper.Initialize(cfg => cfg.CreateMap<DrugUnit, DrugUnitViewModel>()
                             .ForMember("DrugTypeName", opt => opt.MapFrom(src => src.DrugType.DrugTypeName)));
-            unshippedDrugUnitsView = Mapper.Map<List<DrugUnit>, List<DrugUnitViewModel>>(unshippedDrugUnits);
+            availableDrugUnitsView = Mapper.Map<List<DrugUnit>, List<DrugUnitViewModel>>(availableDrugUnits);
+            ViewBag.DrugUnits = availableDrugUnitsView;
 
-            HashSet<DrugType> drugTypes = new HashSet<DrugType>();
-            foreach (var d in unshippedDrugUnits)
-            {
-                if (!drugTypes.Contains(d.DrugType))
-                {
-                    drugTypes.Add(d.DrugType);
-                }
-            }
-
-            List<DrugTypeQuantity> drugTypesList = new List<DrugTypeQuantity>();
-            foreach (var d in drugTypes)
-            {
-                DrugTypeQuantity drugTypeItem = new DrugTypeQuantity
-                {
-                    DrugTypeId = d.DrugTypeId,
-                    DrugTypeName = d.DrugTypeName,
-                    Quantity = 0
-                };
-                drugTypesList.Add(drugTypeItem);
-            }
-
-            ViewBag.DrugUnits = unshippedDrugUnitsView;
-            return View(drugTypesList);
+            return View(drugTypesInDepot);
         }
 
         [HttpPost]
-        public ActionResult Send(List<DrugTypeQuantity> drugTypesList, int depotId)
+        public ActionResult Send(DrugTypesInDepot drugTypesInDepot)
         {
-            int id = depotId;
+            Shipment shipment = Database.DrugUnits.Send(drugTypesInDepot);
 
-            List<DrugUnit> drugUnits = (from d in Database.DrugUnits.GetAll()
-                                        where d.DepotId == id
-                                        where d.Shipped == false
-                                        select d).ToList<DrugUnit>();
-
-            List<string> shippedDrugUnitsId = new List<string>();
-            Dictionary<string, int> unshippedDrugUnits = new Dictionary<string, int>();
-
-            foreach (var d in drugTypesList)
-            {
-                List<DrugUnit> drugUnitWithType = (from t in drugUnits
-                                                   where t.DrugTypeId == d.DrugTypeId
-                                                   select t).ToList<DrugUnit>();
-
-                int shippedCount;
-                int unshippedCount = 0;
-                if (d.Quantity < 0)
-                {
-                    shippedCount = 0;
-                }
-                if ((drugUnitWithType.Count - d.Quantity) < 0)
-                {
-                    shippedCount = drugUnitWithType.Count;
-                    unshippedCount = d.Quantity - drugUnitWithType.Count;
-                    unshippedDrugUnits.Add(d.DrugTypeName, unshippedCount);
-                }
-                else
-                {
-                    shippedCount = d.Quantity;
-                }
-
-                for (int i = 0; i < shippedCount; i++)
-                {
-                    drugUnitWithType[i].Shipped = true;
-                    shippedDrugUnitsId.Add(drugUnitWithType[i].DrugUnitId);
-                }
-
-            }
-            Database.Save();
-
-            ViewBag.DrugUnitsId = shippedDrugUnitsId;
-            ViewBag.UnshippedDrugUnits = unshippedDrugUnits;
-            return View("Display");
+            return View("Display",shipment);
         }
 
     }

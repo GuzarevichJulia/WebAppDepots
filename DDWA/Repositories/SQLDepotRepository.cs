@@ -49,7 +49,7 @@ namespace DDWA.Repositories
                     };
         }
 
-        public IQueryable<DepotDrugUnitView> GetDepotsDrugUnits()
+        public IQueryable<DepotDrugUnitView> GetDrugUnitsFromDepots()
         {
             return from depot in entity
                    join drugUnit in db.DrugUnit

@@ -21,7 +21,7 @@ namespace DDWA.Controllers
 
         public ActionResult DepotsInfo()
         {
-            var depotsDrugUnitsList = Database.Depots.GetDepotsDrugUnits().ToList();
+            var depotsDrugUnitsList = Database.Depots.GetDrugUnitsFromDepots().ToList();
 
             return View(depotsDrugUnitsList);
         }                    

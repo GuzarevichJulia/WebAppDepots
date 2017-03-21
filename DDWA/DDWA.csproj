@@ -228,11 +228,12 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\DepotDrugUnitView.cs" />
     <Compile Include="ViewModels\DepotViewModel.cs" />
-    <Compile Include="ViewModels\DrugTypesQuantity.cs" />
+    <Compile Include="ViewModels\QuantityDrugType.cs" />
+    <Compile Include="ViewModels\DrugTypesInDepot.cs" />
     <Compile Include="ViewModels\DrugUnitViewModel.cs" />
     <Compile Include="ViewModels\EditedDrugUnitModel.cs" />
     <Compile Include="ViewModels\EditingDrugUnitModel.cs" />
-    <Compile Include="ViewModels\SendingDrugUnitsModel.cs" />
+    <Compile Include="ViewModels\Shipment.cs" />
     <Compile Include="ViewModels\WeightView.cs" />
   </ItemGroup>
   <ItemGroup>
